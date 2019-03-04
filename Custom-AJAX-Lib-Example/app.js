@@ -1,10 +1,10 @@
 const http = new EasyHTTP;
 
-// GET Users, asynchronously using Promises
+// GET Users, asynchronously using async/await
 // http.get('https://jsonplaceholder.typicode.com/users')
-// 	// since our get method returns a promise, we need to use .then to catch the data and .catch to handle our error case
 // 	.then(data => console.log(data))
-// 	.catch(err => console.log(err))
+// 	.catch(err => console.log(err));
+
 
 // POST User data, async with Promises
 const data = {
@@ -13,17 +13,17 @@ const data = {
 	email: 'jdoe@yahoo.com'
 }
 
+// POST Users, asynchronously using async/await
 // http.post('https://jsonplaceholder.typicode.com/users', data)
 // 	.then(data => console.log(data))
 // 	.catch(err => console.log(err));
 
-
-// PUT User data, quite similar to POST
+// PUT Users, asynchronously using async/await
 // http.put('https://jsonplaceholder.typicode.com/users/2', data)
 // 	.then(data => console.log(data))
 // 	.catch(error => console.log(error));
 
-// Delete User
+// Delete User, asynchronously using async/await
 http.delete('https://jsonplaceholder.typicode.com/users/2')
 	.then(data => console.log(data))
 	.catch(error => console.log(error));

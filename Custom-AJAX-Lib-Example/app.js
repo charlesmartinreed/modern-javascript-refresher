@@ -1,55 +1,29 @@
-const http = new easyHTTP;
+const http = new EasyHTTP;
 
-// GET POSTS
-// by passing in a callback, we're handling this asynchronously
-// without the callback, the log occurs BEFORE the posts have been fetched
-// http.get('https://jsonplaceholder.typicode.com/posts', function(err, posts){
-// 	if(err) {
-// 		// error handling
-// 		console.log(err);
-// 	} else {
-// 		console.log(posts);
-// 	}
-// });
+// GET Users, asynchronously using Promises
+// http.get('https://jsonplaceholder.typicode.com/users')
+// 	// since our get method returns a promise, we need to use .then to catch the data and .catch to handle our error case
+// 	.then(data => console.log(data))
+// 	.catch(err => console.log(err))
 
-//Grab a single post
-// http.get('https://jsonplaceholder.typicode.com/posts/1', function(err, post){
-// 	if(err) {
-// 		// error handling
-// 		console.log(err);
-// 	} else {
-// 		console.log(post);
-// 	}
-// });
-
-// MAKE A POST REQUEST
+// POST User data, async with Promises
 const data = {
-	title: 'Custom Post',
-	body: 'This is a custom post'
-};
+	name: 'John Doe',
+	username: 'johndoe',
+	email: 'jdoe@yahoo.com'
+}
 
-// http.post('https://jsonplaceholder.typicode.com/posts', data, function(err, post) {
-// 	if (err) {
-// 		console.log(err);
-// 	} else {
-// 		console.log(post);
-// 	}
-// });
+// http.post('https://jsonplaceholder.typicode.com/users', data)
+// 	.then(data => console.log(data))
+// 	.catch(err => console.log(err));
 
-// // UPDATE POST
-// http.put('https://jsonplaceholder.typicode.com/posts/1', data, function(err, post){
-// 	if (err) {
-// 		console.log(err);
-// 	} else {
-// 		console.log(post);
-// 	}
-// });
 
-// DELETE POST
-http.delete('https://jsonplaceholder.typicode.com/posts/1', function(err, response) {
-	if (err) {
-		console.log(err);
-	} else {
-		console.log(response);
-	}
-});
+// PUT User data, quite similar to POST
+// http.put('https://jsonplaceholder.typicode.com/users/2', data)
+// 	.then(data => console.log(data))
+// 	.catch(error => console.log(error));
+
+// Delete User
+http.delete('https://jsonplaceholder.typicode.com/users/2')
+	.then(data => console.log(data))
+	.catch(error => console.log(error));

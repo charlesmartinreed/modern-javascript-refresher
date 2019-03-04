@@ -1,5 +1,6 @@
 // Instantiate classes
 const github = new Github;
+const ui = new UI;
 
 // DOM VARIABLES
 const searchInput = document.getElementById('searchUser');
@@ -17,7 +18,8 @@ searchInput.addEventListener('keyup', (e) => {
 				if(data.profile.message === 'Not Found') {
 					// Show alert noting that user was not found, otherwise, show the profile
 				} else {
-					
+					//show profile
+					ui.showProfile(data.profile);
 				}
 			})
 		} else {

@@ -1,7 +1,7 @@
 class UI {
 	constructor() {
 		this.profile = document.getElementById('profile');
-	}
+}
 
 	showProfile(user){
 		// build our html template and insert it into profile on the DOM
@@ -33,5 +33,38 @@ class UI {
 		<h3 class="page-heading mb-3">Latest Repos</h3>
 		<div id="repos"></div>
 		`;
+	}
+
+	// OCCURS WHEN NO USER FOUND
+	showAlert(message, className) {
+		//clear any remain alerts before displaying new ones
+		this.clearAlert();
+
+		// create a div, grab parent element, grab sibling, insert div before elements
+		const div = document.createElement('div');
+		div.className = className;
+		div.appendChild(document.createTextNode(message));
+
+		const container = document.querySelector('.searchContainer');
+		const search = document.querySelector('.search');
+		container.insertBefore(div, search);
+
+		setTimeout(() => {
+			this.clearAlert();
+		}, 2000)
+	}
+
+	// PREVENT ALERTS FROM PILING UP IN THE DOM
+	clearAlert() {
+		const currentAlert = document.querySelector('.alert');
+		if(currentAlert) {
+			//remove it
+			currentAlert.remove();
+		}
+	}
+
+	// CLEAR PROFILE INFO FROM DOM
+	clearProfile() {
+		this.profile.innerHTML = '';
 	}
 }

@@ -12,6 +12,7 @@ class UI {
 	}
 
 	paint(weather) {
+
 		const currentTempinK = Number.parseFloat(weather.main.temp);
 		const currentTempinF = Math.round((currentTempinK - 273.15) * (9/5) + 32);
 

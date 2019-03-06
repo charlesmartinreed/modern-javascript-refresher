@@ -41,7 +41,7 @@ class UI {
 		}
 	}
 
-	paint(weather) {
+	display(weather) {
 		let convertedWeatherInfo = ui.convert(weather);
 
 		this.location.textContent = weather.name;

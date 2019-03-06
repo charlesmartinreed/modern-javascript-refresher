@@ -1,40 +1,29 @@
 let re;
-// each character here is a literal
-re = /hello/;
-re = /hello/i; // i makes this expression case insensitive
-// re = /hello/g; // Global search, searches for ALL instances
+// using literal characters
+//re = /hello/;
+re = /hello/i;
 
-// console.log(re); //read as an expression
-// console.log(re.source); //disregard the /, gives us the inner expression
+// using METACHARACTER symbols
+re = /^h/i; // means must START with 'h', case insensitive
+re = /world$/i; // means must END with 'world', case insensitive
+re = /^hello$/i; //must start and end with 'hello'
+re = /h.llo/i; //match any ONE character
+re = /h*llo/i; //matches any character 0 or more time, including nothing at all
 
-// exec() - RETURN RESULT IN ARRAY IF PRESENT, NULL IF NOT
-// const result = re.exec('yet another hello world');
+re = /gre?a?y/i; //means the character before the ? is optional
+re = /gre?a?y\?/i; //escape character is \
 
-// returns expression, index it begins at and the string being matched
-// console.log(result);
-//console.log(result[0]);
-// console.log(result.index); //starting point for match
-// console.log(result.input); //the input string for our exec()
+const str = 'gray?'; //gray and grey both match, as does gry, griy does not
 
-// test() - RETURNS TRUE OR FALSE, DEPENDING UPON MATCH
+const result = re.exec(str);
+console.log(result);
 
-// const result = re.test('Hello');
-// console.log(result); // FALSE when our expression is case sensitive
+function reTest(re, str) {
+	if(re.test(str)) {
+		console.log(`${str} matches ${re.source}`);
+	} else {
+		console.log(`${str} does not match ${re.source}`);
+	}
+}
 
-// match() - RETURN RESULT ARRAY OR NULL
-
-// Difference? We call this on the string we want to match rather than on the expression itself
-// const str = 'Hell There'; //
-// const result = str.match(re);
-// console.log(result); //returns null
-
-// search() - Returns index of the first match, if not found returns -1
-
-// const str = 'Everyone says Hello There';
-// const result = str.search(re);
-// console.log(result);
-
-// replace() - Returns new string with some or all patterns matches
-const str = 'Hello There';
-const newStr = str.replace(re, 'Goodbye');
-console.log(newStr);
+reTest(re, str);

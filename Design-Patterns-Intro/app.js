@@ -1,81 +1,83 @@
-// Similar to observer
-// Mediators communicate with colleagues, mediated objects
+// We can use the state pattern to determine how an app should behave, what should be displayed, etc.
 
-// two constructor functions, one for user one for chat room
-const User = function(name) {
-	this.name = name;
-	this.chatroom = null;
-}
+const PageState = function() {
+	let currentState = new homeState(this); // this captures this function
 
-const Chatroom = function() {
-	let users = {}; //list of users
-
-	return {
-		// colleagues must register with mediator
-		register: function(user) {
-			users[user.name] = user;
-			user.chatroom = this; //set user to current chatroom
-		}, send: function(message, from, to) {
-			// is the message going to to user?
-			if(to) {
-				// single user message
-				to.receive(message, from);
-			} else {
-				// Mass message
-				for(key in users) {
-					// make sure the key isn't the user who is sending the message
-					if(users[key] !== from) {
-						users[key].receive(message, from);
-					}
-				}
-			}
-		}
+	// load the homeState
+	this.init = function() {
+		this.change(new homeState);
 	}
-}
 
-User.prototype = {
-	send: function(message, to) {
-		this.chatroom.send(message, this, to); // this meaning user
-	},
-	receive: function(message, from) {
-		console.log(`${from.name} to ${this.name}: ${message}`);
+	this.change = function(state) {
+		currentState = state;
 	}
+};
+
+// Create the various states
+// modifies heading and content
+
+const homeState = function(page) {
+	document.querySelector('#heading').textContent = null;
+	document.querySelector('#content').innerHTML = `
+		<div class="jumbotron">
+	  <h1 class="display-4">Hello, world!</h1>
+	  <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+	  <hr class="my-4">
+	  <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+	  <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+	</div>`;
 }
 
-// create Users - colleague
-const charles = new User('Charles');
-const david = new User('David');
-const mika = new User('Mika');
+const aboutState = function(page) {
+	document.querySelector('#heading').textContent = 'About Us';
+	document.querySelector('#content').innerHTML = `
+		<p>This is the about page</p>
+	`
+}
 
-//create chatroom - medidator
-const chatroom = new Chatroom();
-chatroom.register(charles);
-chatroom.register(david);
-chatroom.register(mika);
+const contactState = function(page) {
+	document.querySelector('#heading').textContent = 'Contact Us';
+	document.querySelector('#content').innerHTML = `
+		<form>
+			<div class="form-group">
+				<label>Name</label>
+				<input type="text" class="form-control">
+			</div>
+			<div class="form-group">
+				<label>Email Address</label>
+				<input type="email" class="form-control">
+			</div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	`
+}
 
-// try sending messages!
-charles.send('Hola, como estas?', david);
-mika.send('Yo! Is this thing working?', charles);
-david.send('Hey chat people!');
+// instantiate pageStage
+const page = new PageState();
 
-// class User {
-// 	constructor(name, chatroom) {
-// 		this.name = name;
-// 		this.chatroom = chatroom;
-// 	}
-// 	//users can send to single users or broadcast to entire chat room
-// 	// chatroom is mediator, users are the colleagues
-// 	send(message, to) {
-// 		this.chatroom.send(message, this, to);
-// 	}
-//
-// 	receive(message, from) {
-// 		console.log(`${from.name} to ${this.name}: ${message}`);
-// 	}
-// }
-//
-// class Chatroom {
-// 	constructor(users) {
-// 		this.users = users;
-// 	}
-// }
+// init first state
+page.init();
+
+// event triggers
+// UI Vars
+let home, about, contact;
+[home, about, contact] = [document.getElementById('home'), document.getElementById('about'), document.getElementById('contact')]
+
+// home.addEventListener('click', () => page.change(homeState()));
+// about.addEventListener('click', () => page.change(aboutState()));
+// contact.addEventListener('click', () => page.change(contactState()));
+
+home.addEventListener('click', (e) => {
+	page.change(new homeState);
+	e.preventDefault();
+});
+
+about.addEventListener('click', (e) => {
+	page.change(new aboutState);
+	e.preventDefault();
+});
+
+contact.addEventListener('click', (e) => {
+	page.change(new contactState);
+	e.preventDefault();
+});

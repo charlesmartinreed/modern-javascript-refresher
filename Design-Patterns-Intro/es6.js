@@ -1,65 +1,61 @@
-// subscribe/unsubscribe to different events that happen during the lifetime of your app
+// Similar to observer
+// Mediators communicate with colleagues, mediated objects
 
-// ES6 version
+class User {
+	constructor(name) {
+		this.name = name;
+		this.chatroom = null;
+	}
 
-class EventObserver {
+	send(message, to) {
+		this.chatroom.send(message, this, to);
+	}
+
+	receive(message, from) {
+		console.log(`${from.name} to ${this.name}: ${message}`);
+	}
+}
+
+class Chatroom {
 	constructor() {
-		//functions passed into into EventObserver
-		this.observers = [];
+		this.users = {};
+	}
+	// let users = {};
+
+	register(user) {
+		this.users[user.name] = user;
+		user.chatroom = this;
 	}
 
-	subscribe(fn) {
-		this.observers.push(fn);
-		console.log(`You are now subscribed to ${fn.name}`);
+	send(message, from, to) {
+		if(to) {
+			to.receive(message, from);
+		} else {
+			let users = this.users;
+			let keys = Object.keys(users);
+			keys.forEach(function(key){
+				if(key !== from.name) {
+					// console.log(users[key]);
+					users[key].receive(message, from);
+				}
+			})
+		}
 	}
 
-	unsubscribe(fn) {
-		this.observers = this.observers.filter(function(item){
-			if(item !== fn) {
-				//return an array containing everything EXCEPT the unsubscribe, assign that to observers array, thereby updating it
-				return item;
-			}
-		});
-		console.log(`You are now unsubscribed from ${fn.name}`);
-	}
-
-	fire() {
-		this.observers.forEach(function(obs) {
-			//call() calls the function with a given this value and individually provided arguments, though we're not passing those in right now.
-			obs.call();
-		});
-	}
 }
 
-// instantiate EventObserver
-const click = new EventObserver();
+// create Users - colleague
+const charles = new User('Charles');
+const david = new User('David');
+const mika = new User('Mika');
 
-// create event listeners
-document.querySelector('.sub-ms').addEventListener('click', function() {
-	click.subscribe(getCurrentMilliseconds);
-});
-document.querySelector('.unsub-ms').addEventListener('click', function() {
-	click.unsubscribe(getCurrentMilliseconds);
-});
+//create chatroom - medidator
+const chatroom = new Chatroom();
+chatroom.register(charles);
+chatroom.register(david);
+chatroom.register(mika);
 
-document.querySelector('.sub-s').addEventListener('click', function() {
-	click.subscribe(getCurrentSeconds);
-});
-document.querySelector('.unsub-s').addEventListener('click', function() {
-	click.unsubscribe(getCurrentSeconds);
-});
-
-document.querySelector('.fire').addEventListener('click', function() {
-	click.fire();
-});
-
-
-
-// click handlers
-const getCurrentMilliseconds = function() {
-	console.log(`Current Milliseconds: ${new Date().getMilliseconds()}`);
-}
-
-const getCurrentSeconds = function() {
-	console.log(`Current Seconds: ${new Date().getSeconds()}`);
-}
+// try sending messages!
+charles.send('Hola, como estas?', david);
+mika.send('Yo! Is this thing working?', charles);
+david.send('Hey chat people!');

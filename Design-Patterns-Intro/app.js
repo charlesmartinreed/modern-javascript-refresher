@@ -1,27 +1,58 @@
-// Singleton is an IIFE that can only be instantiated one time. All subsequent calls to the constructor will always reference the same instance.
-// These are globally accessed, not encapsulated.
+// Factory pattern
+// create interfaces for create objects, allow subclasses to determine which classes to instantiate
+// often uses in libraries to manipulate objects that are largely the same, but have notably different characteristics - ex: a membership with different tiers.
 
-const Singleton = (function(){
-	let instance;
+function MemberFactory() {
+	this.createMember = function(name, type) {
+		let member;
 
-	function createInstance(){
-		const object = new Object({name: 'Charles'});
-		return object;
-	}
-
-	return {
-		getInstance: function() {
-			if(!instance){
-				instance = createInstance()
-			}
-			return instance;
+		//check the type passed in, use that type to create a certain type of membership
+		switch (type) {
+			case 'simple':
+			member = new SimpleMembership(name);
+			break;
+			case 'standard':
+			member = new StandardMembership(name);
+			break;
+			case 'super':
+			member = new SuperMembership(name);
+			break;
 		}
+		member.type = type;
+
+		// spit out name, type and cost of membership
+		member.define = function() {
+			console.log(`${this.name} (${this.type}): ${this.cost}`);
+		}
+
+		return member;
 	}
-})();
+}
 
-const instanceA = Singleton.getInstance();
-// console.log(instanceA);
+const SimpleMembership = function(name) {
+	this.name = name;
+	this.cost = '$5';
+}
 
-//now watch what happens when we try to instantiate again
-const instanceB = Singleton.getInstance();
-console.log(instanceA === instanceB); //this is true, meaning these are the same instance
+const StandardMembership = function(name) {
+	this.name = name;
+	this.cost = '$15';
+}
+
+const SuperMembership = function(name) {
+	this.name = name;
+	this.cost = '$25';
+}
+
+const members = [];
+
+//define our factory
+const factory = new MemberFactory();
+members.push(factory.createMember('Jane Doe', 'simple'));
+members.push(factory.createMember('Thomas Jane', 'super'));
+members.push(factory.createMember('Dylan Thomas', 'standard'));
+members.push(factory.createMember('Bob Dylan', 'super'));
+
+members.forEach(function(member){
+	member.define();
+});

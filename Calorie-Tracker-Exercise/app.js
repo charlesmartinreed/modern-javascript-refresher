@@ -48,6 +48,15 @@ const ItemCtrl = (() => {
 			// return the newItem so it can be used in UICtrl to add to the DOM
 			return newItem;
 		}),
+		getTotalCalories: (() => {
+			let calCount = 0;
+			data.items.forEach((item) => {
+				calCount += item.calories;
+			})
+			data.totalCalories = calCount;
+
+			return data.totalCalories;
+		}),
 		logData: (() => {
 			return data;
 		})
@@ -60,6 +69,7 @@ const UICtrl = (() => {
 		itemList: '#item-list',
 		itemNameInput: '#item-name',
 		itemCaloriesInput: '#item-calories',
+		totalCalories: '.total-calories',
 		addBtn: '.add-btn',
 	}
 
@@ -111,6 +121,9 @@ const UICtrl = (() => {
 		hideList: (() => {
 			document.querySelector(UISelectors.itemList).style.display = 'none';
 		}),
+		showTotalCalories: ((totalCalories) => {
+			document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
+		}),
 		getSelectors: (() => {
 			return UISelectors;
 		})
@@ -137,6 +150,11 @@ const App = ((ItemCtrl, UICtrl) => {
 				//Add the item using our Item Controller and then add to the UI
 				const newItem = ItemCtrl.addItem(input.name, input.calories)
 				UICtrl.addListItem(newItem);
+
+				// get the total calories and display it on the DOM
+				const totalCalories = ItemCtrl.getTotalCalories();
+				UICtrl.showTotalCalories(totalCalories);
+
 				UICtrl.clearInputs();
 			} else {
 				// might try some error handling here
@@ -160,6 +178,10 @@ const App = ((ItemCtrl, UICtrl) => {
 				// populate list with items using UICtrl
 				UICtrl.populateItemList(items);
 			}
+
+			// get the total calories and display it on the DOM
+			const totalCalories = ItemCtrl.getTotalCalories();
+			UICtrl.showTotalCalories(totalCalories);
 
 			// load our event listeners
 			loadEventListeners();

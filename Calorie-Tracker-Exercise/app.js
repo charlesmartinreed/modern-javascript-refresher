@@ -71,7 +71,7 @@ const UICtrl = (() => {
 				html += `
 					<li class="collection-item" id="item-${item.id}">
 						<strong>${item.name}: </strong>
-						<em>${item.calories}: </em>
+						<em>${item.calories} </em>
 						<a href="#" class="secondary-content">
 							<i class="edit-item fa fa-wrench"></i>
 						</a>
@@ -86,6 +86,22 @@ const UICtrl = (() => {
 				name: document.querySelector(UISelectors.itemNameInput).value,
 				calories: document.querySelector(UISelectors.itemCaloriesInput).value
 			}
+		}),
+		addListItem: ((item) => {
+			// create a li element
+			const li = document.createElement('li');
+			li.className = 'collection-item'
+			li.id = `item-${item.id}`;
+
+			//create HTML and insert item
+			li.innerHTML = `
+			<strong>${item.name}: </strong>
+			<em>${item.calories} </em>
+			<a href="#" class="secondary-content">
+				<i class="edit-item fa fa-wrench"></i>
+			</a>`;
+
+			document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li);
 		}),
 		getSelectors: (() => {
 			return UISelectors;
@@ -110,9 +126,9 @@ const App = ((ItemCtrl, UICtrl) => {
 			const input = UICtrl.getItemInput();
 
 			if(input.name !== '' && input.calories !== '') {
-				//Add the item using our Item Controller
+				//Add the item using our Item Controller and then add to the UI
 				const newItem = ItemCtrl.addItem(input.name, input.calories)
-
+				UICtrl.addListItem(newItem);
 			} else {
 				// might try some error handling here
 			}

@@ -103,6 +103,10 @@ const UICtrl = (() => {
 
 			document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li);
 		}),
+		clearInputs: (() => {
+			document.querySelector(UISelectors.itemNameInput).value = '';
+			document.querySelector(UISelectors.itemCaloriesInput).value = '';
+		}),
 		getSelectors: (() => {
 			return UISelectors;
 		})
@@ -129,10 +133,12 @@ const App = ((ItemCtrl, UICtrl) => {
 				//Add the item using our Item Controller and then add to the UI
 				const newItem = ItemCtrl.addItem(input.name, input.calories)
 				UICtrl.addListItem(newItem);
+				UICtrl.clearInputs();
 			} else {
 				// might try some error handling here
 			}
 
+			// clear out the entry fields
 			e.preventDefault();
 	})
 

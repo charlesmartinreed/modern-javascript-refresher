@@ -3,11 +3,17 @@
 // ITEM CONTROLLER
 const ItemCtrl = (() => {
 	// constructor creates item so we can add it to the Data structure / State
-	const Item = ((id, name, calories) => {
-		this.id = id;
-		this.name = name;
-		this.calories = calories;
-	});
+	// const Item = function(id, name, calories) {
+	// 	this.id = id;
+	// 	this.name = name;
+	// 	this.calories = calories;
+	// };
+
+	function Item(id, name, calories) {
+			this.id = id;
+			this.name = name;
+			this.calories = calories;
+	};
 
 	// Data structure / State
 	const data = {
@@ -24,6 +30,24 @@ const ItemCtrl = (() => {
 		getItems: (() => {
 			return data.items;
 		}),
+		addItem: ((name, calories) => {
+			let ID;
+			//generate an ID for item
+			if(data.items.length > 0) {
+				ID = data.items[data.items.length - 1].id + 1;
+			} else {
+				ID = 0;
+			}
+			//Calories to number
+			calories = parseInt(calories);
+
+			// Create a new Item using our constructor and push it onto the data structure
+			newItem = new Item(ID, name, calories);
+			data.items.push(newItem);
+
+			// return the newItem so it can be used in UICtrl to add to the DOM
+			return newItem;
+		}),
 		logData: (() => {
 			return data;
 		})
@@ -33,7 +57,10 @@ const ItemCtrl = (() => {
 // UI CONTROLLER
 const UICtrl = (() => {
 	const UISelectors = {
-		itemList: '#item-list'
+		itemList: '#item-list',
+		itemNameInput: '#item-name',
+		itemCaloriesInput: '#item-calories',
+		addBtn: '.add-btn',
 	}
 
 	return {
@@ -53,6 +80,15 @@ const UICtrl = (() => {
 			});
 			// Insert list into DOM
 			document.querySelector(UISelectors.itemList).innerHTML = html;
+		}),
+		getItemInput: (() => {
+			return {
+				name: document.querySelector(UISelectors.itemNameInput).value,
+				calories: document.querySelector(UISelectors.itemCaloriesInput).value
+			}
+		}),
+		getSelectors: (() => {
+			return UISelectors;
 		})
 	}
 
@@ -60,6 +96,30 @@ const UICtrl = (() => {
 
 // APP CONTROLLER
 const App = ((ItemCtrl, UICtrl) => {
+	// Load event listeners
+	const loadEventListeners = (() => {
+		const UISelectors = UICtrl.getSelectors();
+
+		// Add item event(s)
+		document.querySelector(UISelectors.addBtn).addEventListener('click', itemAddSubmit);
+	});
+
+	// Add item submit
+	const itemAddSubmit = ((e) => {
+			// check that there's something in the form input
+			const input = UICtrl.getItemInput();
+
+			if(input.name !== '' && input.calories !== '') {
+				//Add the item using our Item Controller
+				const newItem = ItemCtrl.addItem(input.name, input.calories)
+
+			} else {
+				// might try some error handling here
+			}
+
+			e.preventDefault();
+	})
+
 	// returns the init; things that run when the app begins
 
 	return {
@@ -69,6 +129,9 @@ const App = ((ItemCtrl, UICtrl) => {
 
 			// populate list with items using UICtrl
 			UICtrl.populateItemList(items);
+
+			// load our event listeners
+			loadEventListeners();
 		})
 	}
 

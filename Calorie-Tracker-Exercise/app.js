@@ -26,6 +26,17 @@ const StorageCtrl = (() => {
 				items = JSON.parse(localStorage.getItem('items'));
 			}
 			return items;
+		}),
+		updateItemInStorage: ((updatedItem) => {
+			let items = JSON.parse(localStorage.getItem('items'));
+			items.forEach((item, index) => {
+				if(updatedItem.id === item.id) {
+					// splice out the old, put the updated item in its place
+					items.splice(index, 1, updatedItem);
+				}
+			})
+			// set the local storage again
+			localStorage.setItem('items', JSON.stringify(items));
 		})
 	}
 })();
@@ -359,6 +370,9 @@ const App = ((ItemCtrl, StorageCtrl, UICtrl) => {
 		// get the total calories and display it on the DOM
 		const totalCalories = ItemCtrl.getTotalCalories();
 		UICtrl.showTotalCalories(totalCalories);
+
+		// update item in local storage
+		StorageCtrl.updateItemInStorage(updatedItem);
 
 		// exit the edit state
 		UICtrl.clearEditState();

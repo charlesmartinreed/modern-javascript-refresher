@@ -5,18 +5,27 @@ const StorageCtrl = (() => {
 
 	return {
 		storeItem: ((newItem) => {
-			let items = [];
+			let items;
 			if(localStorage.getItem('items') === null) {
 				// create new array, add the new item to it, set it in LS
 				items = [];
 				items.push(newItem);
 				localStorage.setItem('items', JSON.stringify(items));
 			} else {
-				// make items an Object, add new item to it and set in LS 
+				// make items an Object, add new item to it and set in LS
 				items = JSON.parse(localStorage.getItem('items'));
 				items.push(newItem);
 				localStorage.setItem('items', JSON.stringify(items));
 			}
+		}),
+		getItemsFromStorage: (() => {
+			let items;
+			if(localStorage.getItem('items') === null) {
+				items = [];
+			} else {
+				items = JSON.parse(localStorage.getItem('items'));
+			}
+			return items;
 		})
 	}
 })();
@@ -39,11 +48,12 @@ const ItemCtrl = (() => {
 
 	// Data structure / State
 	const data = {
-		items: [
-			// { id: 0, name: 'Steak Dinner', calories: 1200 },
-			// { id: 1, name: 'Cookie Dough Ice Cream', calories: 600 },
-			// { id: 2, name: 'Eggs and Toast', calories: 400 }
-		],
+		// items: [
+		// 	// { id: 0, name: 'Steak Dinner', calories: 1200 },
+		// 	// { id: 1, name: 'Cookie Dough Ice Cream', calories: 600 },
+		// 	// { id: 2, name: 'Eggs and Toast', calories: 400 }
+		// ],
+		items: StorageCtrl.getItemsFromStorage(),
 		currentItem: null,
 		totalCalories: 0
 	}
